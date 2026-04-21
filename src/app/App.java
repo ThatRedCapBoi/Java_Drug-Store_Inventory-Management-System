@@ -4,6 +4,7 @@ import controller.AuthController;
 import controller.CategoryController;
 import controller.DataExchangeController;
 import controller.ProductController;
+import controller.ReportController;
 import infra.DBManager;
 import repository.CategoryRepo;
 import repository.MySqlCategoryRepo;
@@ -24,6 +25,8 @@ import service.ProductServiceImpl;
 import controller.DashboardController;
 import service.DashboardService;
 import service.DashboardServiceImpl;
+import service.ReportService;
+import service.ReportServiceImpl;
 
 public class App {
 
@@ -43,6 +46,7 @@ public class App {
         ProductService productService = new ProductServiceImpl(productRepo);
         DataExchangeService dataExchangeService = new DataExchangeServiceImpl(productRepo);
         DashboardService dashboardService = new DashboardServiceImpl(productRepo);
+        ReportService reportService = new ReportServiceImpl(productRepo);
         
         // Controllers
         AuthController authController = new AuthController(authService);
@@ -50,10 +54,11 @@ public class App {
         ProductController productController = new ProductController(productService);
         DataExchangeController dataExchangeController = new DataExchangeController(dataExchangeService);
         DashboardController dashboardController = new DashboardController(dashboardService);
+        ReportController reportController = new ReportController(reportService);
         
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new LoginView(authController, categoryController, productController, dataExchangeController, dashboardController).setVisible(true);
+            new LoginView(authController, categoryController, productController, dataExchangeController, dashboardController, reportController).setVisible(true);
         });
     }
 }

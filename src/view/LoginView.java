@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import view.DashboardView;
 import controller.DataExchangeController;
 import controller.DashboardController;
+import controller.ReportController;
 /**
  *
  * @author Itadori
@@ -24,6 +25,7 @@ public class LoginView extends javax.swing.JFrame {
     private ProductController productController;
     private DataExchangeController dataexchangeController;
     private DashboardController dashboardController;
+    private ReportController reportController;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginView.class.getName());
 
     /**
@@ -33,13 +35,14 @@ public class LoginView extends javax.swing.JFrame {
         initComponents();
     }
 
-    public LoginView(AuthController authController, CategoryController categoryController, ProductController productController, DataExchangeController dataexchangeController, DashboardController dashboardController) {
+    public LoginView(AuthController authController, CategoryController categoryController, ProductController productController, DataExchangeController dataexchangeController, DashboardController dashboardController, ReportController reportController) {
         initComponents();
         this.authController = authController;
         this.categoryController = categoryController;
         this.productController = productController;
         this.dataexchangeController = dataexchangeController;
         this.dashboardController = dashboardController;
+        this.reportController = reportController;
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -162,7 +165,7 @@ public class LoginView extends javax.swing.JFrame {
 
             User u = authController.login(username, password);
 
-            DashboardView dash = new DashboardView(authController, categoryController, productController, dataexchangeController, dashboardController, u);
+            DashboardView dash = new DashboardView(authController, categoryController, productController, dataexchangeController, dashboardController, reportController, u);
             dash.setVisible(true);
             this.dispose();
 
