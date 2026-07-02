@@ -29,6 +29,11 @@ import service.ProductServiceImpl;
 import controller.DashboardController;
 import service.DashboardService;
 import service.DashboardServiceImpl;
+import controller.AuditLogController;
+import repository.AuditLogRepo;
+import repository.MySqlAuditLogRepo;
+import service.AuditLogService;
+import service.AuditLogServiceImpl;
 import service.ReportService;
 import service.ReportServiceImpl;
 import service.VendorService;
@@ -57,29 +62,32 @@ public class App {
         UserRepo userRepo = new MySqlUserRepo(db);
         CategoryRepo categoryRepo = new MySqlCategoryRepo(db);
         ProductRepo productRepo = new MySqlProductRepo(db);
+        AuditLogRepo auditLogRepo = new MySqlAuditLogRepo(db);
         VendorRepo vendorRepo = new MySqlVendorRepo(db);
-        
+
         // Services
         AuthService authService = new AuthServiceImpl(userRepo);
         CategoryService categoryService = new CategoryServiceImpl(categoryRepo);
-        ProductService productService = new ProductServiceImpl(productRepo);
+        AuditLogService auditLogService = new AuditLogServiceImpl(auditLogRepo, authService);
+        ProductService productService = new ProductServiceImpl(productRepo, auditLogService);
         DataExchangeService dataExchangeService = new DataExchangeServiceImpl(productRepo);
         ReportService reportService = new ReportServiceImpl(productRepo);
         VendorService vendorService = new VendorServiceImpl(vendorRepo);
         DashboardService dashboardService = new DashboardServiceImpl(productRepo, categoryRepo);
-        
+
         // Controllers
         AuthController authController = new AuthController(authService);
         CategoryController categoryController = new CategoryController(categoryService);
         ProductController productController = new ProductController(productService);
         DataExchangeController dataExchangeController = new DataExchangeController(dataExchangeService);
         DashboardController dashboardController = new DashboardController(dashboardService);
+        AuditLogController auditLogController = new AuditLogController(auditLogService);
         ReportController reportController = new ReportController(reportService);
         VendorController vendorController = new VendorController(vendorService);
-        
+
         // Start UI
         SwingUtilities.invokeLater(() -> {
-            new LoginView(authController, categoryController, productController, dataExchangeController, dashboardController, reportController, vendorController).setVisible(true);
+            new LoginView(authController, categoryController, productController, dataExchangeController, dashboardController, reportController, vendorController, auditLogController).setVisible(true);
         });
     }
 }

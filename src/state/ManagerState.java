@@ -21,6 +21,7 @@ public class ManagerState implements AppState {
             dv.setDashboardGenerateEnabled(true);
             dv.setReportEnabled(true);
             dv.setVendorModuleEnabled(true);
+            dv.setAuditLogEnabled(true);
         } else if (view instanceof ProductListView) {
             ProductListView pv = (ProductListView) view;
             pv.setDeleteEnabled(true);
