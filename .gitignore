@@ -1,3 +1,6 @@
 lib/mysql-connector-j-9.5.0.jar
 src/infra/DBManager.java
 /dist/
+build/built-jar.properties
+nbproject/private/private.properties
+nbproject/private/private.xml
