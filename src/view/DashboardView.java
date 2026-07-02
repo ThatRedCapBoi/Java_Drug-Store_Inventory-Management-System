@@ -235,26 +235,7 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImportExportActionPerformed
 
     private void btnGenerateDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateDashboardActionPerformed
-        try {
-            int threshold = 10;
-            dto.DashboardStats stats = dashboardController.generate(threshold, user.getRole());
-            StringBuilder sb = new StringBuilder();
-            sb.append("Total products: ").append(stats.getTotalProducts()).append("\n");
-            sb.append("Low stock (<= ").append(stats.getThreshold()).append("): ").append(stats.getLowStockCount()).append("\n\n");
-            int showMax = Math.min(10, stats.getLowStockProducts().size());
-            sb.append("Top ").append(showMax).append(" low stock items:\n");
-            for (int i = 0; i < showMax; i++) {
-                model.Product p = stats.getLowStockProducts().get(i);
-                sb.append("- ").append(p.getSku()).append(" | ")
-                        .append(p.getName()).append(" | qty=").append(p.getQuantity())
-                        .append("\n");
-            }
-            JOptionPane.showMessageDialog(this, sb.toString(), "Dashboard", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Generate dashboard failed:\n" + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        new ReportView(dashboardController, categoryController, user.getRole()).setVisible(true);
     }//GEN-LAST:event_btnGenerateDashboardActionPerformed
 
     /**
