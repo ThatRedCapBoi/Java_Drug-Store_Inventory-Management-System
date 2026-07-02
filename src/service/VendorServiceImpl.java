@@ -33,16 +33,13 @@ public class VendorServiceImpl implements VendorService {
         if (v == null) {
             throw new VendorException("Vendor cannot be null.");
         }
-        if (v.getVendorId() == null || v.getVendorId().trim().isEmpty()) {
-            throw new VendorException("Vendor ID is mandatory.");
-        }
-        if (v.getName() == null || v.getName().trim().isEmpty()) {
+        if (v.getVendorName() == null || v.getVendorName().trim().isEmpty()) {
             throw new VendorException("Vendor Name is mandatory.");
         }
         if (v.getAddress() == null || v.getAddress().trim().isEmpty()) {
             throw new VendorException("Address is mandatory.");
         }
-        if (v.getPersonIncharge() == null || v.getPersonIncharge().trim().isEmpty()) {
+        if (v.getPersonInCharge() == null || v.getPersonInCharge().trim().isEmpty()) {
             throw new VendorException("Person Incharge is mandatory.");
         }
     }
@@ -51,27 +48,21 @@ public class VendorServiceImpl implements VendorService {
     public Vendor create(Vendor v, String role) throws VendorException {
         validate(v);
 
-        if (repo.existsByVendorId(v.getVendorId().trim())) {
-            throw new VendorException("Vendor ID already exists.");
-        }
-
-        v.setVendorId(v.getVendorId().trim());
-        v.setName(v.getName().trim());
+        v.setVendorName(v.getVendorName().trim());
         v.setAddress(v.getAddress().trim());
-        v.setPersonIncharge(v.getPersonIncharge().trim());
+        v.setPersonInCharge(v.getPersonInCharge().trim());
         return repo.save(v);
     }
 
     @Override
     public void update(Vendor v, String role) throws VendorException {
         validate(v);
-        if (v.getId() <= 0) {
+        if (v.getVendorID() <= 0) {
             throw new VendorException("Invalid vendor id.");
         }
-        v.setVendorId(v.getVendorId().trim());
-        v.setName(v.getName().trim());
+        v.setVendorName(v.getVendorName().trim());
         v.setAddress(v.getAddress().trim());
-        v.setPersonIncharge(v.getPersonIncharge().trim());
+        v.setPersonInCharge(v.getPersonInCharge().trim());
         repo.update(v);
     }
 

@@ -2,42 +2,33 @@ package model;
 
 public class Vendor {
 
-    private long id;
-    private String vendorId;
-    private String name;
-    private String personIncharge;
+    private int vendorID;
+    private String vendorName;
+    private String personInCharge;
     private String address;
 
-    public long getId() {
-        return id;
+    public int getVendorID() {
+        return vendorID;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setVendorID(int vendorID) {
+        this.vendorID = vendorID;
     }
 
-    public String getVendorId() {
-        return vendorId;
+    public String getVendorName() {
+        return vendorName;
     }
 
-    public void setVendorId(String vendorId) {
-        this.vendorId = vendorId;
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
     }
 
-    public String getName() {
-        return name;
+    public String getPersonInCharge() {
+        return personInCharge;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPersonIncharge() {
-        return personIncharge;
-    }
-
-    public void setPersonIncharge(String personIncharge) {
-        this.personIncharge = personIncharge;
+    public void setPersonInCharge(String personInCharge) {
+        this.personInCharge = personInCharge;
     }
 
     public String getAddress() {

@@ -17,17 +17,16 @@ public class MySqlVendorRepo implements VendorRepo {
 
     private Vendor map(ResultSet rs) throws SQLException {
         Vendor v = new Vendor();
-        v.setId(rs.getLong("id"));
-        v.setVendorId(rs.getString("vendor_id"));
-        v.setName(rs.getString("name"));
-        v.setPersonIncharge(rs.getString("person_incharge"));
-        v.setAddress(rs.getString("address"));
+        v.setVendorID(rs.getInt("VendorID"));
+        v.setVendorName(rs.getString("VendorName"));
+        v.setPersonInCharge(rs.getString("PersonInCharge"));
+        v.setAddress(rs.getString("Address"));
         return v;
     }
 
     @Override
     public List<Vendor> findAll() {
-        String sql = "SELECT id, vendor_id, name, person_incharge, address FROM vendors ORDER BY name";
+        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address FROM vendors ORDER BY VendorName";
         List<Vendor> list = new ArrayList<>();
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -42,7 +41,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public Optional<Vendor> findById(long id) {
-        String sql = "SELECT id, vendor_id, name, person_incharge, address FROM vendors WHERE id = ?";
+        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address FROM vendors WHERE VendorID = ?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -59,18 +58,17 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public Vendor save(Vendor v) {
-        String sql = "INSERT INTO vendors (vendor_id, name, person_incharge, address) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO vendors (VendorName, PersonInCharge, Address) VALUES (?, ?, ?)";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, v.getVendorId());
-            ps.setString(2, v.getName());
-            ps.setString(3, v.getPersonIncharge());
-            ps.setString(4, v.getAddress());
+            ps.setString(1, v.getVendorName());
+            ps.setString(2, v.getPersonInCharge());
+            ps.setString(3, v.getAddress());
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
-                    v.setId(keys.getLong(1));
+                    v.setVendorID(keys.getInt(1));
                 }
             }
             return v;
@@ -81,14 +79,13 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public void update(Vendor v) {
-        String sql = "UPDATE vendors SET vendor_id=?, name=?, person_incharge=?, address=? WHERE id=?";
+        String sql = "UPDATE vendors SET VendorName=?, PersonInCharge=?, Address=? WHERE VendorID=?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, v.getVendorId());
-            ps.setString(2, v.getName());
-            ps.setString(3, v.getPersonIncharge());
-            ps.setString(4, v.getAddress());
-            ps.setLong(5, v.getId());
+            ps.setString(1, v.getVendorName());
+            ps.setString(2, v.getPersonInCharge());
+            ps.setString(3, v.getAddress());
+            ps.setInt(4, v.getVendorID());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Vendor update failed: " + e.getMessage(), e);
@@ -97,7 +94,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public void delete(long id) {
-        String sql = "DELETE FROM vendors WHERE id=?";
+        String sql = "DELETE FROM vendors WHERE VendorID=?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -110,8 +107,8 @@ public class MySqlVendorRepo implements VendorRepo {
     @Override
     public List<Vendor> search(String query) {
         String q = (query == null) ? "" : query.trim();
-        String sql = "SELECT id, vendor_id, name, person_incharge, address "
-                + "FROM vendors WHERE vendor_id LIKE ? OR name LIKE ? ORDER BY name";
+        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address "
+                + "FROM vendors WHERE VendorName LIKE ? OR PersonInCharge LIKE ? ORDER BY VendorName";
 
         List<Vendor> list = new ArrayList<>();
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
@@ -131,15 +128,9 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public boolean existsByVendorId(String vendorId) {
-        String sql = "SELECT 1 FROM vendors WHERE LOWER(vendor_id) = LOWER(?) LIMIT 1";
-
-        try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, vendorId);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Vendor existsByVendorId failed: " + e.getMessage(), e);
-        }
+        // NOTE: This method needs adjustment to match the new schema, 
+        // which does NOT have a 'vendor_id' string column, only the INT PK 'VendorID'.
+        // If searching by ID, use VendorID. 
+        return false;
     }
 }

@@ -19,12 +19,11 @@ public class Product {
     private BigDecimal price;
     private int quantity;
     private long categoryId;
-    private Long vendorId;
-    private String vendor;
+    private Integer vendorID;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public long getId() {
+     public long getId() {
         return id;
     }
 
@@ -72,22 +71,6 @@ public class Product {
         this.categoryId = categoryId;
     }
 
-    public Long getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(Long vendorId) {
-        this.vendorId = vendorId;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -102,5 +85,13 @@ public class Product {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Integer getVendorID() {
+        return vendorID;
+    }
+
+    public void setVendorID(Integer vendorID) {
+        this.vendorID = vendorID;
     }
 }
