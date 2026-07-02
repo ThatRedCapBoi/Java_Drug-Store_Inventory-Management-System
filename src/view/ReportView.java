@@ -39,12 +39,13 @@ public class ReportView extends JFrame {
     private final DashboardController dashboardController;
 
     private final JComboBox<CategoryItem> cboCategory = new JComboBox<>();
+    private final JComboBox<VendorItem> cboVendor = new JComboBox<>();
     private final JTextField txtProduct = new JTextField(12);
     private final JTextField txtFrom = new JTextField(9);
     private final JTextField txtTo = new JTextField(9);
     private final BarChartPanel chart = new BarChartPanel();
     private final DefaultTableModel tableModel = new DefaultTableModel(
-            new Object[]{"SKU", "Name", "Category", "Qty", "Price", "Created"}, 0) {
+            new Object[]{"SKU", "Name", "Category", "Vendor", "Qty", "Price", "Created", "Modified"}, 0) {
         @Override
         public boolean isCellEditable(int r, int c) {
             return false;
@@ -52,23 +53,32 @@ public class ReportView extends JFrame {
     };
     private final JLabel lblSummary = new JLabel(" ");
     private final Map<Long, String> categoryNames = new HashMap<>();
+    private Map<Integer, String> vendorNames = new HashMap<>();
 
-    public ReportView(DashboardController dashboardController, CategoryController categoryController, String role) {
+    public ReportView(DashboardController dashboardController, CategoryController categoryController, controller.VendorController vendorController, String role) {
         this.dashboardController = dashboardController;
 
         setTitle("Generate Report (" + role + ")");
-        setSize(720, 560);
+        setSize(960, 560);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        DefaultComboBoxModel<CategoryItem> model = new DefaultComboBoxModel<>();
-        model.addElement(new CategoryItem("All categories", null));
+        DefaultComboBoxModel<CategoryItem> catModel = new DefaultComboBoxModel<>();
+        catModel.addElement(new CategoryItem("All categories", null));
         for (Category c : categoryController.listCategories()) {
             categoryNames.put(c.getId(), c.getName());
-            model.addElement(new CategoryItem(c.getName(), c.getId()));
+            catModel.addElement(new CategoryItem(c.getName(), c.getId()));
         }
-        cboCategory.setModel(model);
+        cboCategory.setModel(catModel);
+
+        DefaultComboBoxModel<VendorItem> venModel = new DefaultComboBoxModel<>();
+        venModel.addElement(new VendorItem("All vendors", 0));
+        for (model.Vendor v : vendorController.listVendors()) {
+            vendorNames.put(v.getVendorID(), v.getVendorName());
+            venModel.addElement(new VendorItem(v.getVendorName(), v.getVendorID()));
+        }
+        cboVendor.setModel(venModel);
 
         add(buildFilterBar(), BorderLayout.NORTH);
 
@@ -88,6 +98,8 @@ public class ReportView extends JFrame {
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         bar.add(new JLabel("Category:"));
         bar.add(cboCategory);
+        bar.add(new JLabel("Vendor:"));
+        bar.add(cboVendor);
         bar.add(new JLabel("Product:"));
         bar.add(txtProduct);
         bar.add(new JLabel("From:"));
@@ -129,9 +141,14 @@ public class ReportView extends JFrame {
             tableModel.setRowCount(0);
             for (Product p : result.getProducts()) {
                 tableModel.addRow(new Object[]{
-                    p.getSku(), p.getName(),
+                    p.getSku(),
+                    p.getName(),
                     categoryNames.getOrDefault(p.getCategoryId(), "Uncategorized"),
-                    p.getQuantity(), p.getPrice(), p.getCreatedAt()
+                    vendorNames.getOrDefault(p.getVendorID(), "N/A"),
+                    p.getQuantity(),
+                    p.getPrice(),
+                    p.getCreatedAt() != null ? p.getCreatedAt().toLocalDate() : "",
+                    p.getUpdatedAt() != null ? p.getUpdatedAt().toLocalDate() : ""
                 });
             }
             lblSummary.setText("Total: " + result.getTotalProducts()
@@ -148,9 +165,24 @@ public class ReportView extends JFrame {
         return t.isEmpty() ? null : LocalDate.parse(t);
     }
 
+    private static class VendorItem {
+        final String label;
+        final Integer id;
+
+        VendorItem(String label, Integer id) {
+            this.label = label;
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
     /** Combo entry: display label + backing category id (null = all). */
     private static class CategoryItem {
-
+        
         final String label;
         final Long id;
 
@@ -164,4 +196,7 @@ public class ReportView extends JFrame {
             return label;
         }
     }
+    
+    
+    
 }

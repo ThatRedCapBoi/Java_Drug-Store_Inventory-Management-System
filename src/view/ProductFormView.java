@@ -29,28 +29,31 @@ public class ProductFormView extends javax.swing.JFrame {
      */
     private List<Category> categories;
 
-    public ProductFormView(java.awt.Frame parent, ProductController productController, CategoryController categoryController, String role, Product editing, Runnable onSaved) {
+    private controller.VendorController vendorController;
+    private List<model.Vendor> vendors;
 
-    initComponents();
+    public ProductFormView(java.awt.Frame parent, ProductController productController, CategoryController categoryController, controller.VendorController vendorController, String role, Product editing, Runnable onSaved) {
+        initComponents();
+        this.productController = productController;
+        this.categoryController = categoryController;
+        this.vendorController = vendorController;
+        this.role = role;
+        this.editing = editing;
+        this.onSaved = onSaved;
 
-    this.productController = productController;
-    this.categoryController = categoryController;
-    this.role = role;
-    this.editing = editing;
-    this.onSaved = onSaved;
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-    setLocationRelativeTo(parent);
-    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        loadCategoriesIntoCombo();
+        loadVendorsIntoCombo();
 
-    loadCategoriesIntoCombo();
-
-    if (editing != null) {
-        setTitle("Edit Product");
-        fillForm(editing);
-    } else {
-        setTitle("Add Product");
+        if (editing != null) {
+            setTitle("Edit Product");
+            fillForm(editing);
+        } else {
+            setTitle("Add Product");
+        }
     }
-}
 
     private void loadCategoriesIntoCombo() {
         try {
@@ -78,6 +81,22 @@ public class ProductFormView extends javax.swing.JFrame {
         }
     }
 
+    private void loadVendorsIntoCombo() {
+        cmbVendor.removeAllItems();
+        vendors = vendorController.listVendors();
+        for (model.Vendor v : vendors) {
+            cmbVendor.addItem(v.getVendorName());
+        }
+    }
+    
+    private Integer selectedVendorId() {
+        int idx = cmbVendor.getSelectedIndex();
+        if (idx < 0 || idx >= vendors.size()) {
+            return null;
+        }
+        return vendors.get(idx).getVendorID();
+    }
+
     private void fillForm(Product p) {
         txtSku.setText(p.getSku());
         txtName.setText(p.getName());
@@ -86,6 +105,12 @@ public class ProductFormView extends javax.swing.JFrame {
         for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).getId() == p.getCategoryId()) {
                 cmbCategory.setSelectedIndex(i);
+                break;
+            }
+        }
+        for (int i = 0; i < vendors.size(); i++) {
+            if (p.getVendorID() != null && vendors.get(i).getVendorID() == p.getVendorID()) {
+                cmbVendor.setSelectedIndex(i);
                 break;
             }
         }
@@ -119,6 +144,8 @@ public class ProductFormView extends javax.swing.JFrame {
         spnQty = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         cmbCategory = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        cmbVendor = new javax.swing.JComboBox<>();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
@@ -160,7 +187,11 @@ public class ProductFormView extends javax.swing.JFrame {
 
         jLabel6.setText("Category :");
 
+        jLabel7.setText("Vendor :");
+
         cmbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cmbVendor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -194,14 +225,16 @@ public class ProductFormView extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
                         .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtSku, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(spnQty)
                             .addComponent(txtPrice)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbCategory, 0, 151, Short.MAX_VALUE))))
+                            .addComponent(cmbCategory, 0, 151, Short.MAX_VALUE)
+                            .addComponent(cmbVendor, 0, 151, Short.MAX_VALUE))))
                 .addContainerGap(177, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -230,6 +263,10 @@ public class ProductFormView extends javax.swing.JFrame {
                     .addComponent(cmbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(cmbVendor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
                     .addComponent(btnCancel))
                 .addGap(0, 183, Short.MAX_VALUE))
@@ -253,6 +290,7 @@ public class ProductFormView extends javax.swing.JFrame {
 
             long catId = selectedCategoryId();
             p.setCategoryId(catId);
+            p.setVendorID(selectedVendorId());
 
             if (editing == null) {
                 productController.create(p, role);
@@ -311,12 +349,14 @@ public class ProductFormView extends javax.swing.JFrame {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<String> cmbCategory;
+    private javax.swing.JComboBox<String> cmbVendor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSpinner spnQty;
     private javax.swing.JTextField txtName;

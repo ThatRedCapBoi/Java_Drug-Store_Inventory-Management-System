@@ -44,10 +44,9 @@ public class VendorFormView extends javax.swing.JFrame {
     }
 
     private void fillForm(Vendor v) {
-        txtVendorId.setText(v.getVendorId());
-        txtName.setText(v.getName());
+        txtName.setText(v.getVendorName());
         txtAddress.setText(v.getAddress());
-        txtPersonIncharge.setText(v.getPersonIncharge());
+        txtPersonIncharge.setText(v.getPersonInCharge());
     }
 
     /**
@@ -65,8 +64,8 @@ public class VendorFormView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtVendorId = new javax.swing.JTextField();
         txtName = new javax.swing.JTextField();
+        txtVendorId = new javax.swing.JTextField();
         txtAddress = new javax.swing.JTextField();
         txtPersonIncharge = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
@@ -75,9 +74,10 @@ public class VendorFormView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Vendor Form View");
 
-        jPanel1.setBackground(new java.awt.Color(51, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(18, 143, 242));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Vendor Form View");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -87,7 +87,7 @@ public class VendorFormView extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(113, 113, 113))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,7 +129,7 @@ public class VendorFormView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnSave)
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,11 +139,11 @@ public class VendorFormView extends javax.swing.JFrame {
                             .addComponent(jLabel5))
                         .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtVendorId, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                            .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                            .addComponent(txtAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                            .addComponent(txtPersonIncharge, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))))
-                .addContainerGap(78, Short.MAX_VALUE))
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtVendorId, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPersonIncharge, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,22 +165,21 @@ public class VendorFormView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtPersonIncharge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
                     .addComponent(btnCancel))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(0, 231, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        Vendor v = new Vendor();
-        v.setVendorId(txtVendorId.getText());
-        v.setName(txtName.getText());
+        Vendor v = (editing == null) ? new Vendor() : editing;
+        v.setVendorName(txtName.getText());
         v.setAddress(txtAddress.getText());
-        v.setPersonIncharge(txtPersonIncharge.getText());
+        v.setPersonInCharge(txtPersonIncharge.getText());
 
         try {
             if (editing == null) {
@@ -188,7 +187,6 @@ public class VendorFormView extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Vendor Successfully Added",
                         "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                v.setId(editing.getId());
                 controller.update(v, role);
                 JOptionPane.showMessageDialog(this, "Vendor Successfully Updated",
                         "Success", JOptionPane.INFORMATION_MESSAGE);

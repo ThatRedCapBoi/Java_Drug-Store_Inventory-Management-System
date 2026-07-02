@@ -23,6 +23,7 @@ public class ProductListView extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProductListView.class.getName());
     private ProductController productController;
     private CategoryController categoryController;
+    private controller.VendorController vendorController;
     private String role;
     private DefaultTableModel tableModel;
     private final Runnable onBack;
@@ -30,10 +31,11 @@ public class ProductListView extends javax.swing.JFrame {
     /**
      * Creates new form ProductListView
      */
-public ProductListView(ProductController productController, CategoryController categoryController, String role, Runnable onBack) {
+public ProductListView(ProductController productController, CategoryController categoryController, controller.VendorController vendorController, String role, Runnable onBack) {
         initComponents();
         this.productController = productController;
         this.categoryController = categoryController;
+        this.vendorController = vendorController;
         this.role = role;
         this.onBack = onBack;
 
@@ -98,10 +100,18 @@ public ProductListView(ProductController productController, CategoryController c
         for (Category c : cats) {
             catName.put(c.getId(), c.getName());
         }
+        
+        // Fetch vendors to get names by ID
+        List<model.Vendor> vendors = vendorController.listVendors();
+        java.util.Map<Integer, String> vendorName = new java.util.HashMap<>();
+        for (model.Vendor v : vendors) {
+            vendorName.put(v.getVendorID(), v.getVendorName());
+        }
+
         java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy");
         for (Product p : products) {
             String cName = catName.getOrDefault(p.getCategoryId(), "N/A");
-            String vendor = p.getVendor() != null ? p.getVendor() : "N/A";
+            String vName = (p.getVendorID() != null) ? vendorName.getOrDefault(p.getVendorID(), "N/A") : "N/A";
             String created = p.getCreatedAt() != null ? p.getCreatedAt().format(fmt) : "";
             String updated = p.getUpdatedAt() != null ? p.getUpdatedAt().format(fmt) : "";
             tableModel.addRow(new Object[]{
@@ -111,7 +121,7 @@ public ProductListView(ProductController productController, CategoryController c
                 p.getPrice(),
                 p.getQuantity(),
                 cName,
-                vendor,
+                vName,
                 created,
                 updated
             });
@@ -311,7 +321,7 @@ public ProductListView(ProductController productController, CategoryController c
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        ProductFormView form = new ProductFormView(this, productController, categoryController, role, null, this::loadAll);
+        ProductFormView form = new ProductFormView(this, productController, categoryController, vendorController, role, null, this::loadAll);
         form.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -322,7 +332,7 @@ public ProductListView(ProductController productController, CategoryController c
             return;
         }
         productController.getProduct(id).ifPresentOrElse(p -> {
-            ProductFormView form = new ProductFormView(this, productController, categoryController, role, p, this::loadAll);
+            ProductFormView form = new ProductFormView(this, productController, categoryController, vendorController, role, p, this::loadAll);
             form.setVisible(true);
         }, () -> JOptionPane.showMessageDialog(this, "Product not found."));
     }//GEN-LAST:event_btnEditActionPerformed

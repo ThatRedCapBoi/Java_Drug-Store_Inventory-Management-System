@@ -240,6 +240,7 @@ public class DashboardView extends javax.swing.JFrame {
         ProductListView v = new ProductListView(
                 productController,
                 categoryController,
+                vendorController,
                 user.getRole(),
                 () -> this.setVisible(true)
         );
@@ -254,7 +255,7 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImportExportActionPerformed
 
     private void btnGenerateDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateDashboardActionPerformed
-        new ReportView(dashboardController, categoryController, user.getRole()).setVisible(true);
+        new ReportView(dashboardController, categoryController, vendorController, user.getRole()).setVisible(true);
     }//GEN-LAST:event_btnGenerateDashboardActionPerformed
 
     private void btnVendorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendorsActionPerformed
