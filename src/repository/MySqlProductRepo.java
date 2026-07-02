@@ -42,8 +42,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public List<Product> findAll() {
-        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id FROM products ORDER BY name";
-        String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at FROM products ORDER BY name";
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id, created_at, updated_at FROM products ORDER BY name";
         List<Product> list = new ArrayList<>();
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -60,8 +59,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public Optional<Product> findById(long id) {
-        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id FROM products WHERE id = ?";
-        String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at FROM products WHERE id = ?";
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id, created_at, updated_at FROM products WHERE id = ?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -149,8 +147,7 @@ public class MySqlProductRepo implements ProductRepo {
     @Override
     public List<Product> search(String query) {
         String q = (query == null) ? "" : query.trim();
-        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id "
-        String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at "
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id, created_at, updated_at "
                 + "FROM products WHERE sku LIKE ? OR name LIKE ? ORDER BY name";
 
         List<Product> list = new ArrayList<>();
@@ -214,8 +211,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public List<Product> findLowStock(int threshold) {
-        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id "
-        String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at "
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id, created_at, updated_at "
                 + "FROM products WHERE quantity <= ? ORDER BY quantity ASC, name ASC";
         List<Product> list = new ArrayList<>();
 
