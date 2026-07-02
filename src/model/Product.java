@@ -19,6 +19,7 @@ public class Product {
     private BigDecimal price;
     private int quantity;
     private long categoryId;
+    private Long vendorId;
     private String vendor;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -69,6 +70,14 @@ public class Product {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Long getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
 
     public String getVendor() {

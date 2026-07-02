@@ -4,6 +4,7 @@ import view.DashboardView;
 import view.ProductListView;
 import view.CategoryListView;
 import view.DataExchangeView;
+import view.VendorListView;
 
 public class StaffState implements AppState {
 
@@ -14,6 +15,8 @@ public class StaffState implements AppState {
             dv.setProductFormEnabled(true);
             dv.setDataExchangeEnabled(false);
             dv.setDashboardGenerateEnabled(false);
+            dv.setReportEnabled(true);
+            dv.setVendorModuleEnabled(false);
             dv.setAuditLogEnabled(false);
         } else if (view instanceof ProductListView) {
             ProductListView pv = (ProductListView) view;
@@ -29,6 +32,11 @@ public class StaffState implements AppState {
             DataExchangeView dev = (DataExchangeView) view;
             dev.setImportEnabled(false);
             dev.setExportEnabled(false);
+        } else if (view instanceof VendorListView) {
+            VendorListView vlv = (VendorListView) view;
+            vlv.setAddEnabled(false);
+            vlv.setEditEnabled(false);
+            vlv.setDeleteEnabled(false);
         }
     }
 }
