@@ -18,6 +18,7 @@ public class Product {
     private BigDecimal price;
     private int quantity;
     private long categoryId;
+    private Long vendorId;
 
     public long getId() {
         return id;
@@ -65,5 +66,13 @@ public class Product {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Long getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
 }
