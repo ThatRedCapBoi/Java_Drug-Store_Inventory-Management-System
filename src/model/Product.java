@@ -5,6 +5,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -19,6 +20,9 @@ public class Product {
     private int quantity;
     private long categoryId;
     private Long vendorId;
+    private String vendor;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public long getId() {
         return id;
@@ -74,5 +78,27 @@ public class Product {
 
     public void setVendorId(Long vendorId) {
         this.vendorId = vendorId;
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
