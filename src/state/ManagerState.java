@@ -4,6 +4,7 @@ import view.DashboardView;
 import view.ProductListView;
 import view.CategoryListView;
 import view.DataExchangeView;
+import view.VendorListView;
 
 /**
  *
@@ -18,6 +19,7 @@ public class ManagerState implements AppState {
             dv.setProductFormEnabled(true);
             dv.setDataExchangeEnabled(true);
             dv.setDashboardGenerateEnabled(true);
+            dv.setVendorModuleEnabled(true);
         } else if (view instanceof ProductListView) {
             ProductListView pv = (ProductListView) view;
             pv.setDeleteEnabled(true);
@@ -30,6 +32,11 @@ public class ManagerState implements AppState {
             DataExchangeView dev = (DataExchangeView) view;
             dev.setImportEnabled(true);
             dev.setExportEnabled(true);
+        } else if (view instanceof VendorListView) {
+            VendorListView vlv = (VendorListView) view;
+            vlv.setAddEnabled(true);
+            vlv.setEditEnabled(true);
+            vlv.setDeleteEnabled(true);
         }
     }
 }

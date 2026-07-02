@@ -31,6 +31,8 @@ public class MySqlProductRepo implements ProductRepo {
         p.setPrice(rs.getBigDecimal("price"));
         p.setQuantity(rs.getInt("quantity"));
         p.setCategoryId(rs.getLong("category_id"));
+        long vId = rs.getLong("vendor_id");
+        p.setVendorId(rs.wasNull() ? null : vId);
         Timestamp ct = rs.getTimestamp("created_at");
         if (ct != null) p.setCreatedAt(ct.toLocalDateTime());
         Timestamp ut = rs.getTimestamp("updated_at");
@@ -40,6 +42,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public List<Product> findAll() {
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id FROM products ORDER BY name";
         String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at FROM products ORDER BY name";
         List<Product> list = new ArrayList<>();
 
@@ -57,6 +60,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public Optional<Product> findById(long id) {
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id FROM products WHERE id = ?";
         String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at FROM products WHERE id = ?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
@@ -76,7 +80,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public Product save(Product p) {
-        String sql = "INSERT INTO products (sku, name, price, quantity, category_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products (sku, name, price, quantity, category_id, vendor_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -85,6 +89,11 @@ public class MySqlProductRepo implements ProductRepo {
             ps.setBigDecimal(3, p.getPrice());
             ps.setInt(4, p.getQuantity());
             ps.setLong(5, p.getCategoryId());
+            if (p.getVendorId() != null) {
+                ps.setLong(6, p.getVendorId());
+            } else {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            }
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -101,7 +110,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public void update(Product p) {
-        String sql = "UPDATE products SET sku=?, name=?, price=?, quantity=?, category_id=? WHERE id=?";
+        String sql = "UPDATE products SET sku=?, name=?, price=?, quantity=?, category_id=?, vendor_id=? WHERE id=?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -110,7 +119,12 @@ public class MySqlProductRepo implements ProductRepo {
             ps.setBigDecimal(3, p.getPrice());
             ps.setInt(4, p.getQuantity());
             ps.setLong(5, p.getCategoryId());
-            ps.setLong(6, p.getId());
+            if (p.getVendorId() != null) {
+                ps.setLong(6, p.getVendorId());
+            } else {
+                ps.setNull(6, java.sql.Types.INTEGER);
+            }
+            ps.setLong(7, p.getId());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -135,6 +149,7 @@ public class MySqlProductRepo implements ProductRepo {
     @Override
     public List<Product> search(String query) {
         String q = (query == null) ? "" : query.trim();
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id "
         String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at "
                 + "FROM products WHERE sku LIKE ? OR name LIKE ? ORDER BY name";
 
@@ -199,6 +214,7 @@ public class MySqlProductRepo implements ProductRepo {
 
     @Override
     public List<Product> findLowStock(int threshold) {
+        String sql = "SELECT id, sku, name, price, quantity, category_id, vendor_id "
         String sql = "SELECT id, sku, name, price, quantity, category_id, created_at, updated_at "
                 + "FROM products WHERE quantity <= ? ORDER BY quantity ASC, name ASC";
         List<Product> list = new ArrayList<>();
