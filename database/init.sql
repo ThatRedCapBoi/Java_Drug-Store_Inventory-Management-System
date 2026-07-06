@@ -47,7 +47,8 @@ CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -68,22 +69,22 @@ INSERT INTO `categories` (`id`, `name`, `description`, `created_at`) VALUES
 --
 
 CREATE TABLE `vendors` (
-  `id` int(11) NOT NULL,
-  `vendor_id` varchar(50) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `person_incharge` varchar(100) NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `person_incharge` varchar(255) DEFAULT NULL,
+  `address` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `vendors`
 --
 
-INSERT INTO `vendors` (`id`, `vendor_id`, `name`, `person_incharge`, `address`, `created_at`, `updated_at`) VALUES
-(1, 'VND01', 'PharmaCorp', 'John Doe', '123 Pharma St.', '2026-01-14 11:30:00', '2026-01-14 11:30:00'),
-(2, 'VND02', 'HealthSupplies Co.', 'Jane Smith', '456 Health Ave.', '2026-01-14 11:31:00', '2026-01-14 11:31:00');
+INSERT INTO `vendors` (`id`, `name`, `person_incharge`, `address`, `created_at`, `updated_at`) VALUES
+(1, 'PharmaCorp', 'John Doe', '123 Pharma St.', '2026-01-14 11:30:00', '2026-01-14 11:30:00'),
+(2, 'HealthSupplies Co.', 'Jane Smith', '456 Health Ave.', '2026-01-14 11:31:00', '2026-01-14 11:31:00');
 
 -- --------------------------------------------------------
 
