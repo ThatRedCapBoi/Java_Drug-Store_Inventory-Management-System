@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author Itadori
@@ -13,6 +15,8 @@ public class Category {
     private long id;
     private String name;
     private String description;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public long getId() {
         return id;
@@ -36,5 +40,21 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

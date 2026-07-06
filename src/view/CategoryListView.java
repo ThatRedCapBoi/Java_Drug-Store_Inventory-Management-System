@@ -50,7 +50,7 @@ public class CategoryListView extends javax.swing.JFrame {
         btnBack.putClientProperty("JButton.buttonType", "roundRect");
         
         
-        tableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Description"}, 0) {
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Description", "Created", "Updated"}, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -83,8 +83,11 @@ public class CategoryListView extends javax.swing.JFrame {
         try {
             tableModel.setRowCount(0);
             List<Category> cats = controller.listCategories();
+            java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy");
             for (Category c : cats) {
-                tableModel.addRow(new Object[]{c.getId(), c.getName(), c.getDescription()});
+                String created = c.getCreatedAt() != null ? c.getCreatedAt().format(fmt) : "";
+                String updated = c.getUpdatedAt() != null ? c.getUpdatedAt().format(fmt) : "";
+                tableModel.addRow(new Object[]{c.getId(), c.getName(), c.getDescription(), created, updated});
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Failed to load categories:\n" + e.getMessage(),

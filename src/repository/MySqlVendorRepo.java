@@ -17,16 +17,24 @@ public class MySqlVendorRepo implements VendorRepo {
 
     private Vendor map(ResultSet rs) throws SQLException {
         Vendor v = new Vendor();
-        v.setVendorID(rs.getInt("VendorID"));
-        v.setVendorName(rs.getString("VendorName"));
-        v.setPersonInCharge(rs.getString("PersonInCharge"));
-        v.setAddress(rs.getString("Address"));
+        v.setVendorID(rs.getInt("id"));
+        v.setVendorName(rs.getString("name"));
+        v.setPersonInCharge(rs.getString("person_incharge"));
+        v.setAddress(rs.getString("address"));
+        java.sql.Timestamp created = rs.getTimestamp("created_at");
+        if (created != null) {
+            v.setCreatedAt(created.toLocalDateTime());
+        }
+        java.sql.Timestamp updated = rs.getTimestamp("updated_at");
+        if (updated != null) {
+            v.setUpdatedAt(updated.toLocalDateTime());
+        }
         return v;
     }
 
     @Override
     public List<Vendor> findAll() {
-        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address FROM vendors ORDER BY VendorName";
+        String sql = "SELECT id, name, person_incharge, address, created_at, updated_at FROM vendors ORDER BY name";
         List<Vendor> list = new ArrayList<>();
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -41,7 +49,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public Optional<Vendor> findById(long id) {
-        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address FROM vendors WHERE VendorID = ?";
+        String sql = "SELECT id, name, person_incharge, address, created_at, updated_at FROM vendors WHERE id = ?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -58,7 +66,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public Vendor save(Vendor v) {
-        String sql = "INSERT INTO vendors (VendorName, PersonInCharge, Address) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO vendors (name, person_incharge, address) VALUES (?, ?, ?)";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, v.getVendorName());
@@ -79,7 +87,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public void update(Vendor v) {
-        String sql = "UPDATE vendors SET VendorName=?, PersonInCharge=?, Address=? WHERE VendorID=?";
+        String sql = "UPDATE vendors SET name=?, person_incharge=?, address=? WHERE id=?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, v.getVendorName());
@@ -94,7 +102,7 @@ public class MySqlVendorRepo implements VendorRepo {
 
     @Override
     public void delete(long id) {
-        String sql = "DELETE FROM vendors WHERE VendorID=?";
+        String sql = "DELETE FROM vendors WHERE id=?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -107,8 +115,8 @@ public class MySqlVendorRepo implements VendorRepo {
     @Override
     public List<Vendor> search(String query) {
         String q = (query == null) ? "" : query.trim();
-        String sql = "SELECT VendorID, VendorName, PersonInCharge, Address "
-                + "FROM vendors WHERE VendorName LIKE ? OR PersonInCharge LIKE ? ORDER BY VendorName";
+        String sql = "SELECT id, name, person_incharge, address, created_at, updated_at "
+                + "FROM vendors WHERE name LIKE ? OR person_incharge LIKE ? ORDER BY name";
 
         List<Vendor> list = new ArrayList<>();
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {

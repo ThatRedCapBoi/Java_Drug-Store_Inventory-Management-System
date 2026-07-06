@@ -48,7 +48,7 @@ public class VendorListView extends javax.swing.JFrame {
         btnBack.putClientProperty("JButton.buttonType", "roundRect");
         
 
-        tableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Person InCharge", "Address"}, 0) {
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Person InCharge", "Address", "Created", "Updated"}, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -81,8 +81,11 @@ public class VendorListView extends javax.swing.JFrame {
         try {
             tableModel.setRowCount(0);
             List<Vendor> vnds = controller.listVendors();
+            java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy");
             for (Vendor v : vnds) {
-                tableModel.addRow(new Object[]{v.getVendorID(), v.getVendorName(), v.getPersonInCharge(), v.getAddress()});
+                String created = v.getCreatedAt() != null ? v.getCreatedAt().format(fmt) : "";
+                String updated = v.getUpdatedAt() != null ? v.getUpdatedAt().format(fmt) : "";
+                tableModel.addRow(new Object[]{v.getVendorID(), v.getVendorName(), v.getPersonInCharge(), v.getAddress(), created, updated});
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Failed to load vendors:\n" + e.getMessage(),

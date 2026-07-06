@@ -25,7 +25,7 @@ public class MySqlCategoryRepo implements CategoryRepo {
 
     @Override
     public List<Category> findAll() {
-        String sql = "SELECT id, name, description FROM categories ORDER BY name";
+        String sql = "SELECT id, name, description, created_at, updated_at FROM categories ORDER BY name";
         List<Category> list = new ArrayList<>();
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -35,6 +35,14 @@ public class MySqlCategoryRepo implements CategoryRepo {
                 cat.setId(rs.getLong("id"));
                 cat.setName(rs.getString("name"));
                 cat.setDescription(rs.getString("description"));
+                java.sql.Timestamp created = rs.getTimestamp("created_at");
+                if (created != null) {
+                    cat.setCreatedAt(created.toLocalDateTime());
+                }
+                java.sql.Timestamp updated = rs.getTimestamp("updated_at");
+                if (updated != null) {
+                    cat.setUpdatedAt(updated.toLocalDateTime());
+                }
                 list.add(cat);
             }
             return list;
@@ -46,7 +54,7 @@ public class MySqlCategoryRepo implements CategoryRepo {
 
     @Override
     public Optional<Category> findById(long id) {
-        String sql = "SELECT id, name, description FROM categories WHERE id = ?";
+        String sql = "SELECT id, name, description, created_at, updated_at FROM categories WHERE id = ?";
 
         try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -60,6 +68,14 @@ public class MySqlCategoryRepo implements CategoryRepo {
                 cat.setId(rs.getLong("id"));
                 cat.setName(rs.getString("name"));
                 cat.setDescription(rs.getString("description"));
+                java.sql.Timestamp created = rs.getTimestamp("created_at");
+                if (created != null) {
+                    cat.setCreatedAt(created.toLocalDateTime());
+                }
+                java.sql.Timestamp updated = rs.getTimestamp("updated_at");
+                if (updated != null) {
+                    cat.setUpdatedAt(updated.toLocalDateTime());
+                }
                 return Optional.of(cat);
             }
 
